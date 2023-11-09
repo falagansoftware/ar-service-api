@@ -1,5 +1,5 @@
-export const HOST = 'HOST';
-export const PORT = 'PORT';
+export const SERVER_HOST = 'SERVER_HOST';
+export const SERVER_PORT = 'SERVER_PORT';
 export const GLOBAL_PREFIX = 'auto-repair-api';
 export const NODE_ENV = 'development';
 export const NODE_ENV_PROD = 'production';
