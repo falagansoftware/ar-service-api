@@ -37,3 +37,4 @@ lerna-debug.log*
 /functions/src
 /functions/*.log
 /.vscode
+/.env
