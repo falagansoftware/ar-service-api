@@ -10,6 +10,6 @@ export class UserEntity {
   public surname: string;
   @Column()
   public email: string;
-  @Column({ type: 'nvarchar' })
+  @Column({ type: 'varchar' })
   public password: string;
 }
