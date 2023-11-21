@@ -2,25 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { USER_NOT_CREATED, USER_NOT_DELETED, USER_NOT_FOUND } from '../../../config/errors-dictionary';
-import { USER_PASS_HASH_CONFIG } from '../../../config/constants';
 import { FindOutput } from '../../../shared/shared.models';
 import { CreateUser, FindUsers, UpdateUser, User } from './users.models';
 import { UserEntity } from './users.entities';
 import { setFindQuery } from '../../../shared/typeorm.utils';
 import { AppError } from 'src/app/shared/lib-errors';
-import { EncryptService, Serializer } from 'src/app/shared/lib-tools';
+import { Serializer } from 'src/app/shared/lib-tools';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-    private encryptService: EncryptService,
   ) {}
 
   async create(createUser: CreateUser): Promise<User | AppError> {
     try {
-      createUser.password = await this.encryptService.hash(USER_PASS_HASH_CONFIG, createUser.password);
       return this.usersRepository.save(createUser);
     } catch (error) {
       return new AppError(USER_NOT_CREATED);
