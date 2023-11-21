@@ -50,10 +50,6 @@ import { EncryptModule } from './shared/lib-tools';
       useFactory: (configService: ConfigService) => ({
         hashConfigurations: [
           {
-            name: USER_ID_HASH_CONFIG,
-            salt: configService.get(USER_ID_HASH_SALT),
-          },
-          {
             name: USER_PASS_HASH_CONFIG,
             salt: configService.get(USER_PASS_HASH_SALT),
           },

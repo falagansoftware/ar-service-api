@@ -6,3 +6,14 @@ export class SignInMapper {
   @Expose()
   password: string;
 }
+
+export class SignUpMapper {
+  @Expose()
+  name: string;
+  @Expose()
+  surname: string;
+  @Expose()
+  email: string;
+  @Expose()
+  password: string;
+}

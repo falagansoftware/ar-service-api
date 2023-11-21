@@ -8,6 +8,8 @@ export interface SignInCredentials {
   refreshToken: string;
 }
 
+export interface SignUpCredentials extends SignInCredentials {}
+
 export interface RefreshCredentials extends SignInCredentials {}
 
 export interface RefreshToken {
@@ -15,4 +17,11 @@ export interface RefreshToken {
     sub: string;
     refreshToken: string;
   };
+}
+
+export interface SignUp {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
 }
