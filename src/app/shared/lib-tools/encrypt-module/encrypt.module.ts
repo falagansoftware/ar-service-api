@@ -1,31 +1,28 @@
-import { DynamicModule, FactoryProvider, Module, ModuleMetadata } from '@nestjs/common';
-import { EncryptService } from './encrypt.service';
-import { EncryptModuleOptions } from './encrypt.module.models';
-
-type EncryptAsyncModuleOptions = Pick<ModuleMetadata, 'imports'> &
-  Pick<FactoryProvider<EncryptModuleOptions>, 'useFactory' | 'inject'> & { global?: boolean };
+import { DynamicModule, Module } from '@nestjs/common';
+import { _EncryptService } from './encrypt.service';
+import { EncryptAsyncModuleOptions, EncryptModuleOptions } from './encrypt.module.models';
 
 @Module({})
-export class EncryptModule {
+export class _EncryptModule {
   static register(options: EncryptModuleOptions): DynamicModule {
     return {
       global: options.global || false,
-      module: EncryptModule,
+      module: _EncryptModule,
       providers: [
         {
           provide: 'CONFIG_OPTIONS',
           useValue: options,
         },
-        EncryptService,
+        _EncryptService,
       ],
-      exports: [EncryptService],
+      exports: [_EncryptService],
     };
   }
 
   static registerAsync(options: EncryptAsyncModuleOptions): DynamicModule {
     return {
       global: options.global || false,
-      module: EncryptModule,
+      module: _EncryptModule,
       imports: options.imports,
       providers: [
         {
@@ -33,9 +30,9 @@ export class EncryptModule {
           useFactory: options.useFactory,
           inject: options.inject,
         },
-        EncryptService,
+        _EncryptService,
       ],
-      exports: [EncryptService],
+      exports: [_EncryptService],
     };
   }
 }
