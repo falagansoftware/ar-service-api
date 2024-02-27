@@ -20,9 +20,9 @@ import { CreateUserInput, FilterUserInput, UpdateUserInput, UserIdInput } from '
 import { CreateUserMapper, UpdateUserMapper, UserIdMapper } from './users.mappers';
 import { CreateUserOutput, ItemUserOutput, UpdateUserOutput } from './users.outputs.dto';
 import { CreateUser, FindUsers, UpdateUser, User, UserId } from '../services/users.models';
-import { AccessTokenAuthGuard } from '../../auth/services/tokens/tokens.guards';
 import { AppError } from 'src/app/shared/lib-errors';
 import { Serializer } from 'src/app/shared/lib-tools';
+import { AccessTokenAuthGuard } from 'src/app/shared/lib-auth/strategies/basic-auth/tokens/tokens.guards';
 @ApiTags('Users')
 @UseGuards(AccessTokenAuthGuard)
 @Controller('users')

@@ -18,10 +18,13 @@ import {
 import { WinstonModule } from 'nest-winston';
 import { HttpModule } from '@nestjs/axios';
 import * as winston from 'winston';
-import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EncryptModule } from './shared/lib-tools';
+import { _EncryptModule } from './shared/lib-tools';
+import { AuthController } from './modules/auth/controllers/auth.controller';
+import { _AuthModule } from './shared/lib-auth/auth.module';
+import { AuthStrategy } from './shared/lib-auth/auth.module.models';
+import { UsersService } from './modules/users/services/users.service';
 
 @Module({
   imports: [
@@ -43,7 +46,7 @@ import { EncryptModule } from './shared/lib-tools';
       }),
       inject: [ConfigService],
     }),
-    EncryptModule.registerAsync({
+    _EncryptModule.registerAsync({
       global: true,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -71,10 +74,17 @@ import { EncryptModule } from './shared/lib-tools';
         database: configService.get(DATABASE_POSTGRES_NAME),
       }),
     }),
-    AuthModule,
+    _AuthModule.registerAsync({
+      imports: [ConfigModule, UsersModule],
+      inject: [UsersService],
+      useFactory: (usersService: UsersService) => ({
+        type: AuthStrategy.BASIC,
+        config: { basic: { usersService } },
+      }),
+    }),
     UsersModule,
   ],
-  controllers: [],
+  controllers: [AuthController],
   providers: [],
   exports: [HttpModule],
 })

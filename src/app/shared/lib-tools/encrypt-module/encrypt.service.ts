@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import { EncryptHashConfigurations, EncryptModuleOptions } from './encrypt.module.models';
 
 @Injectable()
-export class EncryptService {
+export class _EncryptService {
   private readonly logger: Logger;
   private hashConfigurations: EncryptHashConfigurations[] = [];
 

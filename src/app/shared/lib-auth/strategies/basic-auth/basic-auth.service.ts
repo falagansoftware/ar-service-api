@@ -1,22 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { UsersService } from '../../../users/services/users.service';
-import { TokensService } from '../tokens/tokens.service';
-import { SERVER_ERROR, USER_EXISTS, USER_NOT_CREATED, USER_NOT_FOUND, USER_UNAUTHORIZED } from '../../../../config/errors-dictionary';
-import { REFRESH_TOKEN_SECRET, USER_PASS_HASH_CONFIG } from '../../../../config/constants';
-import { RefreshCredentials, RefreshToken, SignIn, SignInCredentials, SignUp, SignUpCredentials } from './auth.models';
+import { Inject, Injectable } from '@nestjs/common';
+import {
+  SERVER_ERROR,
+  USER_EXISTS,
+  USER_NOT_CREATED,
+  USER_NOT_FOUND,
+  USER_UNAUTHORIZED,
+} from '../../../../config/errors-dictionary';
 import { AppError } from 'src/app/shared/lib-errors';
-import { EncryptService } from 'src/app/shared/lib-tools';
+import { _EncryptService } from 'src/app/shared/lib-tools';
 import { User } from 'src/app/modules/users/services/users.models';
+import { TokensService } from './tokens/tokens.service';
+import {
+  AuthModuleOptions,
+  AuthStrategyService,
+  BasicAuthUsersService,
+  RefreshCredentials,
+  RefreshToken,
+  SignIn,
+  SignInCredentials,
+  SignUp,
+  SignUpCredentials,
+} from '../../auth.module.models';
+import { REFRESH_TOKEN_SECRET } from './constants';
+import { USER_PASS_HASH_CONFIG } from 'src/app/config/constants';
 
-@Injectable()
-export class AuthService {
+@Injectable({})
+export class BasicAuthService implements AuthStrategyService {
+  private usersService: BasicAuthUsersService;
   constructor(
+    @Inject('AUTH_OPTIONS') private options: AuthModuleOptions,
     private tokensService: TokensService,
-    private encryptService: EncryptService,
-    private usersService: UsersService,
-  ) {}
+    private encryptService: _EncryptService,
+  ) {
+    this.usersService = options.config.basic.usersService;
+  }
 
-  async singIn(signIn: SignIn): Promise<SignInCredentials | AppError> {
+  async signIn(signIn: SignIn): Promise<SignInCredentials | AppError> {
     const user = await this.usersService.findBy({ email: signIn.username });
     if (user instanceof AppError) {
       return new AppError(USER_NOT_FOUND);
@@ -41,7 +60,7 @@ export class AuthService {
     }
   }
 
-  async singUp(signUp: SignUp): Promise<SignUpCredentials | AppError> {
+  async signUp(signUp: SignUp): Promise<SignUpCredentials | AppError> {
     const user = await this.usersService.findBy({ email: signUp.email });
     if (user instanceof User) {
       return new AppError(USER_EXISTS);
@@ -71,7 +90,7 @@ export class AuthService {
     }
   }
 
-  async sessionRefresh(refreshToken: RefreshToken): Promise<RefreshCredentials | AppError> {
+  async refreshSession(refreshToken: RefreshToken): Promise<RefreshCredentials | AppError> {
     const user = await this.usersService.findBy({ uid: refreshToken.user.sub });
     const token = refreshToken.user.refreshToken;
     if (user instanceof AppError || !token) {
@@ -95,7 +114,7 @@ export class AuthService {
     };
   }
 
-  async validateUser(username: string, password: string): Promise<any | AppError> {
+  async validateUser(username: string, password: string): Promise<boolean | AppError> {
     const user = await this.usersService.findBy({ email: username });
     if (user instanceof AppError) {
       return new AppError(USER_NOT_FOUND);

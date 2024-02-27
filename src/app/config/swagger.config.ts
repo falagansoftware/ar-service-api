@@ -1,5 +1,5 @@
 import { DocumentBuilder } from '@nestjs/swagger';
-import { ACCESS_TOKEN_HEADER_NAME } from './constants';
+import { ACCESS_TOKEN_HEADER_NAME } from '../shared/lib-auth/strategies/basic-auth/constants';
 
 const environment = process.env['NODE' + '_ENV'];
 

@@ -2,15 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
-  ACCESS_TOKEN_EXPIRATION_TIME,
   ACCESS_TOKEN_SECRET,
-  REFRESH_TOKEN_EXPIRATION_TIME,
+  ACCESS_TOKEN_EXPIRATION_TIME,
   REFRESH_TOKEN_SECRET,
-} from '../../../../config/constants';
+  REFRESH_TOKEN_EXPIRATION_TIME,
+} from '../constants';
 
 @Injectable()
 export class TokensService {
-  constructor(private readonly jwtService: JwtService, private configService: ConfigService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
 
   public async getAccessToken(payload: { username: string; sub: string }): Promise<string> {
     return await this.jwtService.signAsync(payload, {
